@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    
+    <div class="row" style="padding-top:250px">
+        <div class="col-sm-3"></div>
+
+        <div class="col-sm-6">
+            <div class="card">
+            <h5 class="card-header" style="text-align:center">Login</h5>
+            <div class="card-body">
+                <form method="post" style="text-align:center">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <br>
+                <div style="text-align:center">
+                    <a href="{% url 'password_reset' %}" style="text-align:center">Forgot your Password</a><br>
+                    Don't Have an Account ? <a href="{% url 'toDoList:signup' %}" style="text-align: center">Click Here.</a> 
+                <div>
+            </div>
+            </div>
+        </div>
+                
+        <div class="col-sm-3"></div>
+    </div>
+
+</div>
+
+
+{% endblock %}

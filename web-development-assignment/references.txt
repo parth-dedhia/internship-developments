@@ -1,0 +1,18 @@
+References : 
+
+Bootstrap Library : https://getbootstrap.com/
+
+Deployment steps : https://www.codementor.io/jamesezechukwu/how-to-deploy-django-app-on-heroku-dtsee04d4
+
+Using Django Login : 
+https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
+
+Problems faced :
+
+During Development : 
+Ajax call from javascript had been removed and had to find a way around the same.
+
+During Deployment :
+The project name under which I was deploying was already taken and took a lot of time and had to change manage.py, wsgi and setting.py file. That took a little while. The rest of the deployment steps are taken from the above link.
+
+

@@ -1,0 +1,1 @@
+All non-object pandas feature except date were selected. A graph was plot between date of purchase and the price and only  years of data was given and hence no trend could be predicted with the same. Other features like Type, Method, and CouncilArea are one hot encoded and Regionname is tried with both onehot encoded as well as Label encoding

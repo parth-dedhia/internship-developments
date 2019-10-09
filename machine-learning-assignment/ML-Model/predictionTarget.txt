@@ -1,0 +1,1 @@
+I have tried to predict the price with the given dataset. This column seems to be dependent on most of the featurs. Other featurs like year of built or many of other factors are highly factual and can not be predicted.

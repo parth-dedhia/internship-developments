@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}Your To Do List{% endblock %}
+
+{% block content %}
+
+<div style="padding-top:20px; padding-right:20px; float: right;">
+    <form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+        <button type='submit' class="btn btn-primary">Logout</button>
+    </form>
+</div>
+
+<div class="container" style="padding-top:150px">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div class="card">
+                <h5 class="card-header" style="text-align:center">Hey {{ name }}</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-8" style="text-align:center"><h2>{{ day }} , {{ date }}</h2></div>
+                        <div class="col-sm-2"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-8" style="text-align:center"><h3>Whats for today</h3></div>
+                        <div class="col-sm-2"></div>
+                    </div>
+                    <br>
+                    <form method="post" action="{% url 'toDoList:addTask' %} ">
+                    {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-8" style="text-align:center">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="task" id="task" aria-describedby="Enter todo task" placeholder="Enter todo Task" required>
+                                </div> 
+                            </div>
+                            <div class="col-sm-2"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-8" style="text-align:center"> 
+                                <div class="form-group mb-2">
+                                    <div class="form-check form-check-inline">
+                                            Task Priority : &nbsp;
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="3" required>
+                                        <label class="form-check-label" for="inlineRadio3">High</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2">
+                                        <label class="form-check-label" for="inlineRadio2">Moderate</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">
+                                        <label class="form-check-label" for="inlineRadio1">Low</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mb-2">Add</button>
+                                </div> 
+                            </div>
+                            <div class="col-sm-2"></div>
+                        </div>
+                    </form>
+                    <div class="row" style="padding-top: 10px">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-8" style="disply:flex;flex-flow: row wrap; text-align: center;">
+                            <button type="submit" class="btn btn-secondary mb-2" id="deleteCompleted">Delete Completed</button>
+                            <button type="submit" class="btn btn-secondary mb-2" id="deleteAllTasks">Delete All</button>
+                            <button type="button" class="btn btn-secondary mb-2" id="exportAndMail">Export and Mail</button>
+                        </div>
+                        <div class="col-sm-2"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-8" style="overflow-y: scroll; height:300px; overflow: auto; text-align:center">
+                            <form action="{% url 'toDoList:taskCompleted' %}" method="POST" id="completeTask">
+                                {% csrf_token %}
+                                {% if details %}
+                                    {% for detail in details %}
+                                        {% if detail.status == "COMPLETE" %}
+                                            <button type="button" class="btn btn-success btn-lg btn-block changeStatus" data-value="{{ detail.id }}" data-status="COMPLETE" data-name="{{ detail.task }}"><strike>{{ detail.task }}</strike></button>
+                                        {% elif detail.priority == 3 %}
+                                            <button type="button" class="btn btn-danger btn-lg btn-block changeStatus" data-value="{{ detail.id }}" data-status="INCOMPLETE" data-name="{{ detail.task }}">{{ detail.task }}</button>
+                                        {% elif detail.priority == 2 %}
+                                            <button type="button" class="btn btn-warning btn-lg btn-block changeStatus" data-value="{{ detail.id }}" data-status="INCOMPLETE" data-name="{{ detail.task }}">{{ detail.task }}</button>
+                                        {% elif detail.priority == 1 %}
+                                            <button type="button" class="btn btn-success btn-lg btn-block changeStatus" data-value="{{ detail.id }}" data-status="INCOMPLETE" data-name="{{ detail.task }}">{{ detail.task }}</button>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    <br>
+                                    <br>
+                                    <h3>You Haven't added anything yet</h3>
+                                {% endif %}
+                            </form>
+                        </div>
+                        <div class="col-sm-2"></div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+
+        $('.changeStatus').click(function(){
+            text = $(this).attr('data-value');
+            name = $(this).attr('data-name');
+            // console.log(text);
+            if ($(this).attr('data-status') == "INCOMPLETE"){
+                confirmation = confirm('This is a confirmation that you have completed the task : \n' + name);
+                if (confirmation){
+                    // url="{% url 'toDoList:taskCompleted' %}";
+                    const form = document.getElementById('completeTask');
+
+                    const hiddenField = document.createElement('input');
+                    hiddenField.type = 'hidden';
+                    hiddenField.name = "completedTask";
+                    hiddenField.value = text;
+
+                    form.appendChild(hiddenField);
+
+                    form.submit();
+                }
+            }
+            else{
+                alert('You Have already Completed the task\nNo Changes can be done here');
+            }
+        });
+
+        $('#exportAndMail').click(function(){
+
+            const form = document.createElement('form');
+            form.method="get";
+            form.action="{% url 'toDoList:mailPage' %}";
+
+            document.body.appendChild(form);
+
+            form.submit();
+
+        });
+
+        $('#deleteCompleted').click(function(){
+
+            confirmation = confirm("Are You sure you want to delete ALL the COMPLETED tasks");
+
+            if (confirmation){
+                const form = document.createElement('form');
+                form.method="get";
+                form.action="{% url 'toDoList:deleteCompletedTask' %}";
+
+                document.body.appendChild(form);
+
+                form.submit();
+            }
+
+        });
+
+        $('#deleteAllTasks').click(function(){
+
+            confirmation = confirm("Are You sure you want to delete ALL the tasks");
+
+            if (confirmation){
+                const form = document.createElement('form');
+                form.method="get";
+                form.action="{% url 'toDoList:deleteAllTasks' %}";
+
+                document.body.appendChild(form);
+
+                form.submit();
+            }
+
+        });
+
+    });
+</script>
+
+{% endblock %}
